@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wolowitz</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icons/logo_wol.jpeg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<!--<nav class="navbar" role="navigation" aria-label="main navigation">-->
+<!--  <div class="navbar-brand">-->
+<!--    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">-->
+<!--      <span aria-hidden="true"></span>-->
+<!--      <span aria-hidden="true"></span>-->
+<!--      <span aria-hidden="true"></span>-->
+<!--    </a>-->
+<!--  </div>-->
+<!--  <div class="navbar-menu">-->
+<!--    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">-->
+<!--      <a class="navbar-item" href="https://oatmealliu.github.io/">-->
+<!--      <span class="icon">-->
+<!--          <i class="fas fa-home"></i> <b>         FineR</b>-->
+<!--      </span>-->
+<!--      </a>-->
+<!--&lt;!&ndash;      <div class="navbar-item has-dropdown is-hoverable">&ndash;&gt;-->
+<!--&lt;!&ndash;        <a class="navbar-link">&ndash;&gt;-->
+<!--&lt;!&ndash;          More Research&ndash;&gt;-->
+<!--&lt;!&ndash;        </a>&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="navbar-dropdown">&ndash;&gt;-->
+<!--&lt;!&ndash;          <a class="navbar-item" href="https://hypernerf.github.io">&ndash;&gt;-->
+<!--&lt;!&ndash;            HyperNeRF&ndash;&gt;-->
+<!--&lt;!&ndash;          </a>&ndash;&gt;-->
+<!--&lt;!&ndash;          <a class="navbar-item" href="https://nerfies.github.io">&ndash;&gt;-->
+<!--&lt;!&ndash;            Nerfies&ndash;&gt;-->
+<!--&lt;!&ndash;          </a>&ndash;&gt;-->
+<!--&lt;!&ndash;          <a class="navbar-item" href="https://latentfusion.github.io">&ndash;&gt;-->
+<!--&lt;!&ndash;            LatentFusion&ndash;&gt;-->
+<!--&lt;!&ndash;          </a>&ndash;&gt;-->
+<!--&lt;!&ndash;          <a class="navbar-item" href="https://photoshape.github.io">&ndash;&gt;-->
+<!--&lt;!&ndash;            PhotoShape&ndash;&gt;-->
+<!--&lt;!&ndash;          </a>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--    </div>-->
+
+<!--  </div>-->
+<!--</nav>-->
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+                  <!-- Project Logo. -->
+      <div class="column">
+        <div class="content">
+          <img src="static/images/icons/logo_wol.jpeg" style="horiz-align: center; vertical-align: sub" width="360" height="360">
+        </div>
+      </div>
+      <!--/ Project Logo. -->
+<!--          <h1 class="title is-1 publication-title"><img src="static/images/icons/logo.png" style="horiz-align: center; vertical-align: sub" width="256" height="256"></h1>-->
+          <h1 class="title is-2 publication-title">Buddy Wolowitz</h1>
+<!--          <h2 class="title is-3 publication-title">ICLR 2024</h2>-->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://oatmealliu.github.io/">Mingxuan Liu</a><sup>TM</sup>,</span>
+<!--            <span class="author-block">-->
+<!--&lt;!&ndash;              <a href="https://roysubhankar.github.io/">Subhankar Roy</a><sup>4</sup>,</span>&ndash;&gt;-->
+<!--            <span class="author-block">-->
+<!--&lt;!&ndash;              <a href="https://scholar.google.com/citations?user=uBjSytAAAAAJ&hl=en">Wenjing Li</a><sup>3</sup>,&ndash;&gt;-->
+<!--            </span>-->
+<!--            <span class="author-block">-->
+<!--&lt;!&ndash;              <a href="https://zhunzhong.site/">Zhun Zhong</a><sup>3</sup>,&ndash;&gt;-->
+<!--            </span>-->
+<!--            <span class="author-block">-->
+<!--              <a href="https://scholar.google.com/citations?user=stFCYOAAAAAJ&hl=en">Nicu Sebe</a><sup>1</sup>,-->
+<!--            </span>-->
+<!--            <span class="author-block">-->
+<!--              <a href="https://scholar.google.ca/citations?user=xf1T870AAAAJ&hl=en">Elisa Ricci</a><sup>1,2</sup>,-->
+            </span>
+          </div>
+
+<!--          <div class="is-size-5 publication-authors">-->
+<!--            <span class="author-block"><sup>1</sup>University of Trento</span>,-->
+<!--            <span class="author-block"><sup>2</sup>Fondazione Bruno Kessler</span>,-->
+<!--            <span class="author-block"><sup>3</sup>University of Nottingham</span>,-->
+<!--            <span class="author-block"><sup>4</sup>University of Aberdeen</span>-->
+<!--          </div>-->
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+<!--              <span class="link-block">-->
+<!--                <a href="https://arxiv.org/abs/2401.13837"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="ai ai-arxiv"></i>-->
+<!--                  </span>-->
+<!--                  <span>arXiv</span>-->
+<!--                </a>-->
+<!--              </span>-->
+              <span class="link-block">
+                <a href="https://github.com/OatmealLiu"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (coming soon)</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="https://github.com/OatmealLiu/FineR"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="far fa-images"></i>-->
+<!--                  </span>-->
+<!--                  <span>Data (coming soon)</span>-->
+<!--                  </a>-->
+<!--              </span>-->
+              <!-- Video Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="fab fa-youtube"></i>-->
+<!--                  </span>-->
+<!--                  <span>Video</span>-->
+<!--                </a>-->
+<!--              </span>-->
+              <!-- Code Link. -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Project Story. -->
+<section class="section">
+  <div class="container is-max-desktop">
+  <div class="columns is-centered">
+
+
+
+      <!-- Project Logo. -->
+      <div class="column">
+        <div class="content">
+          <img src="static/images/icons/wolowitz.png" style="horiz-align: center; vertical-align: sub" width="360" height="360">
+        </div>
+      </div>
+      <!--/ Project Logo. -->
+
+      <!-- Motivation. -->
+      <div class="column">
+        <h2 class="title is-3">Preface:</h2>
+        <div class="columns is-centered">
+          <div class="column content">
+            <div class="content has-text-justified">
+            <p>
+              In the neon-lit future of 2077, KSc. (Kindergarten of Science) Mingxuan Liu created Wolowitz, a 6 Degree
+              of Freedom robot powered by a Jetson Nano and equipped with an RGB-D camera, designed to interact with the
+              world with unprecedented precision. Tasked with a cryptic message from the future, Wolowitz's mission was
+              to prevent an impending crisis only it could solve.
+            </p>
+            <p>
+              As it journeyed through the bustling streets of New
+              Genesis City, it encountered diverse beings, learning and adapting, blurring the lines between machine
+              and humanity. Wolowitz became a symbol of hope, showcasing the potential for humans and robots to coexist.
+              In its quest, Wolowitz not only discovered its own capabilities but also shaped the future,
+              embodying the bridge between technology and humanity.
+            </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!--/ Motivation. -->
+    </div>
+  </div>
+</section>
+<!-- Project Story. -->
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+        <h2 class="subtitle has-text-centered">
+        <div class="content has-text-justified">
+        <span class="dnerf"><b>TL;DR:</b></span>
+        Wolowitz is my best buddy. He is 6 DoF flexible : )
+        </div>
+      </h2>
+      <video src="static/videos/MiuAndWolo.MP4" class="center" autoplay="true"></video>
+<!--      <br><br>-->
+
+    </div>
+  </div>
+</section>
+
+
+
+<!--<section class="hero is-light is-small">-->
+<!--  <div class="hero-body">-->
+<!--    <div class="container">-->
+<!--      <div id="results-carousel" class="carousel results-carousel">-->
+<!--        <div class="item item-steve">-->
+<!--          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/steve.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-chair-tp">-->
+<!--          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/chair-tp.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-shiba">-->
+<!--          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/shiba.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-fullbody">-->
+<!--          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/fullbody.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-blueshirt">-->
+<!--          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/blueshirt.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-mask">-->
+<!--          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/mask.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-coffee">-->
+<!--          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/coffee.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--        <div class="item item-toby">-->
+<!--          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">-->
+<!--            <source src="./static/videos/toby2.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</section>-->
+
+
+<!--<section class="section">-->
+<!--  <div class="container is-max-desktop">-->
+<!--    &lt;!&ndash; Abstract. &ndash;&gt;-->
+<!--    <div class="columns is-centered has-text-centered">-->
+<!--      <div class="column is-four-fifths">-->
+<!--        <h2 class="title is-3">Abstract</h2>-->
+<!--        <div class="content has-text-justified">-->
+<!--          <p>-->
+<!--            Identifying subordinate-level categories from images is a longstanding task in computer vision and is referred-->
+<!--            to as fine-grained visual recognition (FGVR). It has tremendous significance in real-world applications since an-->
+<!--            average layperson does not excel at differentiating species of birds or mushrooms due to subtle differences-->
+<!--            among the species. A major bottleneck in developing FGVR systems is caused by the need of high-quality paired-->
+<!--            expert annotations.-->
+<!--          </p>-->
+<!--          <p>-->
+<!--            To circumvent the need of expert knowledge we propose-->
+<!--            <b>F</b>ine-gra<b>i</b>ned Sema<b>n</b>tic Cat<b>e</b>gory <b>R</b>easoning (<b>FineR</b>)-->
+<!--            that internally leverages the world knowledge of large language models (LLMs) as a proxy in order to-->
+<!--            reason about fine-grained category names. In detail, to bridge the modality gap between images and LLM, we-->
+<!--            extract part-level visual attributes from images as text and feed that information to a LLM. Based on the-->
+<!--            visual attributes and its internal world knowledge the LLM reasons about the subordinate-level category-->
+<!--            names.-->
+<!--          </p>-->
+<!--          <p>-->
+<!--            Our training-free <b>FineR</b> outperforms several state-of-the-art FGVR and language and vision assistant models-->
+<!--            and shows promise in working in the wild and in new domains where gathering expert annotation is arduous.-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+<!--    <div class="columns is-centered has-text-centered">-->
+<!--      <div class="column is-four-fifths">-->
+<!--        <h2 class="title is-3">Video</h2>-->
+<!--        <div class="publication-video">-->
+<!--          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"-->
+<!--                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+    <!--/ Paper video. -->
+<!--  </div>-->
+<!--</section>-->
+
+
+<!--<section class="section">-->
+<!--  <div class="container is-max-desktop">-->
+<!--    &lt;!&ndash; Method. &ndash;&gt;-->
+<!--    <div class="columns is-centered">-->
+<!--      <div class="column is-full-width">-->
+<!--        <h2 class="title is-3">FineR Method</h2>-->
+
+<!--        &lt;!&ndash; Problem. &ndash;&gt;-->
+<!--        <h3 class="title is-4">Problem Formulation</h3>-->
+<!--        <div class="content has-text-justified">-->
+<!--          <p>-->
+<!--            Our goal is to discover and recognize fine-grained categories using unlabelled images without having access-->
+<!--            to expert annotations and the ground-truth categories that exist in the incoming images. Thus, the-->
+<!--            challenges in such a FGVR task are to first identify (or discover) the classes that exist in the unlabelled-->
+<!--            images from few observation and then assign a class name to each incoming instance.-->
+<!--          </p>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Problem. &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Overview. &ndash;&gt;-->
+<!--        <h3 class="title is-4">FineR System Overview</h3>-->
+<!--        <div class="content has-text-justified">-->
+<!--          <p>-->
+<!--            The idea underpinning our proposed FineR system is that LLMs, which already encode the world knowledge about-->
+<!--            fine-grained categories such as species of animals and plants, can be leveraged to reason about candidate-->
+<!--            class names. Subsequently, the discovered candidate class names and images are used to yield a multi-modal-->
+<!--            classifier to classify a test instance using a VLM (such as CLIP).-->
+<!--          </p>-->
+<!--          <p>-->
+<!--            FineR operates in three phases: (i) Translating Useful Visual Information from Visual to Textual Modality;-->
+<!--            (ii) Fine-grained Semantic Category Reasoning in Language; and (iii) Multi-modal Classifier Construction.-->
+<!--            An overview of FineR system is shown below.-->
+<!--          </p>-->
+<!--        </div>-->
+
+<!--        <div class="content has-text-centered">-->
+<!--           <img src="static/images/framework_finer.png" class="center"/></img>-->
+<!--        </div>-->
+        <!-- Overview. -->
+
+<!--        &lt;!&ndash; Example. &ndash;&gt;-->
+<!--        <h3 class="title is-4">How FineR works</h3>-->
+<!--        <div class="content has-text-justified">-->
+<!--          <p>-->
+<!--            We can also animate the scene by interpolating the deformation latent codes of two input-->
+<!--            frames. Use the slider here to linearly interpolate between the left frame and the right-->
+<!--            frame.-->
+<!--          </p>-->
+<!--        </div>-->
+<!--        <div class="columns is-vcentered interpolation-panel">-->
+<!--          <div class="column is-3 has-text-centered">-->
+<!--            <img src="./static/images/interpolate_start.jpg"-->
+<!--                 class="interpolation-image"-->
+<!--                 alt="Interpolate start reference image."/>-->
+<!--            <p>Start Frame</p>-->
+<!--          </div>-->
+<!--          <div class="column interpolation-video-column">-->
+<!--            <div id="interpolation-image-wrapper">-->
+<!--              Loading...-->
+<!--            </div>-->
+<!--            <input class="slider is-fullwidth is-large is-info"-->
+<!--                   id="interpolation-slider"-->
+<!--                   step="1" min="0" max="100" value="0" type="range">-->
+<!--          </div>-->
+<!--          <div class="column is-3 has-text-centered">-->
+<!--            <img src="./static/images/interpolate_end.jpg"-->
+<!--                 class="interpolation-image"-->
+<!--                 alt="Interpolation end reference image."/>-->
+<!--            <p class="is-bold">End Frame</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <br/>-->
+<!--        &lt;!&ndash;/ Example. &ndash;&gt;-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;/ Method. &ndash;&gt;-->
+
+<!--    &lt;!&ndash; Experiments. &ndash;&gt;-->
+<!--    <div class="columns is-centered">-->
+<!--      <div class="column is-full-width">-->
+<!--        <h2 class="title is-3">Experimental Results</h2>-->
+
+<!--        &lt;!&ndash; Metrics. &ndash;&gt;-->
+<!--        <h3 class="title is-4">Evaluation Metrics</h3>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              We employ two synergistic metrics: <b>Clustering Accuracy (cACC)</b> and <b>Semantic Similarity (sACC)</b>.-->
+<!--              cACC evaluates the model's performance in clustering images from the same category together, but does not-->
+<!--              consider the semantics of the cluster labels. This gap is filled by sACC, which leverages Sentence-BERT-->
+<!--              to compare the semantic similarity of the cluster's assigned name with the ground-truth category.-->
+<!--            </p>-->
+<!--          </div>-->
+          <!-- Metrics -->
+
+<!--        &lt;!&ndash; Five FGVR Datasets. &ndash;&gt;-->
+<!--        <h3 class="title is-4">Benchmarking on Fine-grained Datasets</h3>-->
+<!--          &lt;!&ndash; Quantitative I. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Quantitative Comparison I: The Battle of Machine-driven Approaches</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              We benchmarked our FineR system with constructed baseline and SOTA methods for the task of FGVR without-->
+<!--              expert knowledge on the five-grained datasets, including Caltech-UCSD Bird-200, Stanford Car-196 and-->
+<!--              Dog-120, Flower-102, and Oxford-IIIT Pet-37.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/quanti_main.png" class="center"/></img>-->
+<!--          </div>-->
+<!--&lt;!&ndash;          <div class="content has-text-centered">&ndash;&gt;-->
+<!--&lt;!&ndash;             <img src="static/images/experiments/study_vs_learning.png" class="center"/></img>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--          &lt;!&ndash; Quantitative I. &ndash;&gt;-->
+
+<!--          &lt;!&ndash; Quantitative II. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Quantitative Comparison II: From Layperson to Expert - Where Do We Stand?</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              Echoing with our initial motivation of democratizing FGVR, we conducted a human study to establish-->
+<!--              layperson-level baselines on the Car-196 and Pet-37 datasets, while the ground-truth class names are-->
+<!--              considered as expert-level baseline (or upper bound).-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/human_study.png" class="center"/></img>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; Quantitative II. &ndash;&gt;-->
+
+<!--          &lt;!&ndash; Qualitative. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Qualitative Comparison</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              We visualize and analyze the predictions of our FineR system and the compared methods.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/quali_main.png" class="center"/></img>-->
+<!--          </div>-->
+
+<!--&lt;!&ndash;          <div class="content has-text-justified">&ndash;&gt;-->
+<!--&lt;!&ndash;            <p>&ndash;&gt;-->
+<!--&lt;!&ndash;              More qualitative results.&ndash;&gt;-->
+<!--&lt;!&ndash;            </p>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;          <div class="content has-text-centered">&ndash;&gt;-->
+<!--&lt;!&ndash;             <img src="static/images/experiments/quali_more.png" class="center"/></img>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--          &lt;!&ndash; Qualitative.&ndash;&gt;-->
+<!--        &lt;!&ndash; Five FGVR Datasets. &ndash;&gt;-->
+
+
+<!--        &lt;!&ndash; Pokemon Dataset. &ndash;&gt;-->
+<!--        <h3 class="title is-4">Benchmarking on the Novel Pokemon Dataset</h3>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              To further investigate the FGVR capability of FineR on more novel concepts, we introduce a new-->
+<!--              Pokemon dataset comprised of 10 Pokemon characters, sourced from-->
+<!--              <a href="https://www.pokemon.com/us/pokedex">Pokedex</a> and Google Image Search. In stark contrast to the-->
+<!--              compared methods, FineR successfully discovers 7/10 ground-truth Pokemon categories, nearly reaching the-->
+<!--              upper bound performance.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/pokemon.png" class="center"/></img>-->
+<!--          </div>-->
+<!--        &lt;!&ndash; Pokemon Dataset. &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Reverse Comparison. &ndash;&gt;-->
+<!--        <h3 class="title is-4">The Story of Blackberry Lily - A Reverse Comparison</h3>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              Reverse comparison of prediction results for the"Blackberry Lily" image (upper-left corner) in Flower-102.-->
+<!--              We evaluate the visual counterparts associated with the predicted semantic concepts. To conduct this-->
+<!--              comparison, we employ two distinct methods for inversely identifying their visual counterparts:-->
+<!--              (i) Google Image Search: we query and fetch images that are paired with the predicted class names from-->
+<!--              Google; (ii) Stable Diffusion: we utilize the predicted semantic class names as text prompts to generate-->
+<!--              semantically-conditioned images using Stable Diffusion. Partially correct and wrong predictions are color-->
+<!--              coded. None of the methods correctly predict the ground-truth label. However, the visual counterparts-->
+<!--              reversely predicted by FineR is extremely similar to the ground-truth ones, because it captures the-->
+<!--              useful semantic "Orange-spotted".-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/lily_diffusion.png" class="center"/></img>-->
+<!--          </div>-->
+<!--        &lt;!&ndash; Reverse Comparison. &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Ablation. &ndash;&gt;-->
+<!--        <h3 class="title is-4">Ablation Study</h3>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              We conducted an ablation analysis of the main components of the proposed FineR system.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/ablation.png" class="center"/></img>-->
+<!--          </div>-->
+<!--        &lt;!&ndash; Ablation. &ndash;&gt;-->
+
+<!--        &lt;!&ndash; Sensitivity. &ndash;&gt;-->
+<!--        <h3 class="title is-4">Sensitivity Analysis</h3>-->
+<!--          &lt;!&ndash; Alpha. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Analysis of the Hyperparameter &alpha;</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              We explore the impact of the hyperparameter &alpha; on multi-modal fusion during classifier construction.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/study_alpha.png" class="center"/></img>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; Alpha.&ndash;&gt;-->
+
+<!--          &lt;!&ndash; K. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Analysis of the Hyperparameter K</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              Additionally, we examine the effects of sample augmentation times K in mitigating visual bias due to-->
+<!--              limited sample sizes.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/study_k.png" class="center"/></img>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; K.&ndash;&gt;-->
+
+<!--          &lt;!&ndash; Number of Images for Discovery. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Analysis of the Number of Unlabeled Images Used for Class Name Discovery</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              We also analyze the system’s performance under varying amounts of unlabeled images per category for class-->
+<!--              name discovery.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/study_discover_images.png" class="center"/></img>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; Number of Images for Discovery. &ndash;&gt;-->
+
+<!--          &lt;!&ndash; VLM Model Size. &ndash;&gt;-->
+<!--          <h4 class="title is-5">Analysis of VLM Model Size</h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--            <p>-->
+<!--              Finally, we assess the influence of CLIP VLM model size on our system performance, which shows FineR can-->
+<!--              be scaled by larger models.-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          <div class="content has-text-centered">-->
+<!--             <img src="static/images/experiments/study_vlm_model.png" class="center"/></img>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; VLM Model Size. &ndash;&gt;-->
+
+
+<!--        &lt;!&ndash; Sensitivity. &ndash;&gt;-->
+
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;/ Experiments. &ndash;&gt;-->
+
+<!--  </div>-->
+<!--</section>-->
+
+
+<!--<section class="section" id="BibTeX">-->
+<!--  <div class="container is-max-desktop content">-->
+<!--    <h2 class="title">BibTeX</h2>-->
+<!--    <pre><code>@article{liu2024democratizing,-->
+<!--  title     = {Democratizing Fine-grained Visual Recognition with Large Language Models},-->
+<!--  author    = {Liu, Mingxuan and Roy, Subhankar and Li, Wenjing and Zhong, Zhun and Sebe, Nicu and Ricci, Elisa},-->
+<!--  booktitle = {ICLR},-->
+<!--  year      = {2024}-->
+<!--}</code></pre>-->
+<!--  </div>-->
+<!--</section>-->
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/OatmealLiu" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
